@@ -1,0 +1,16 @@
+html,
+body {
+  /* Prevent scrollbars and potential visual artifacts with transparency */
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  /* Remove default margins/padding for a frameless window */
+  margin: 0;
+  /* max-width: 38rem; */ /* Remove max-width constraint */
+  padding: 0; /* Remove padding */
+  /* Remove drag from the entire body */
+  /* -webkit-app-region: drag; */
+}
