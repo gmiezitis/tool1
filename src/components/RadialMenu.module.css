@@ -1,0 +1,542 @@
+/* src/components/RadialMenu.module.css */
+
+/* Modern hexagonal theme variables - inspired by clean geometric design */
+:root {
+  /* Fully transparent modern color palette */
+  --background-color: rgba(
+    255,
+    255,
+    255,
+    0.02
+  ); /* Almost fully transparent background */
+  --center-color: rgba(
+    255,
+    255,
+    255,
+    0.08
+  ); /* Very transparent white for center hex */
+  --segment-color: rgba(
+    248,
+    250,
+    252,
+    0.05
+  ); /* Almost transparent for surrounding hex */
+  --segment-hover-color: rgba(59, 130, 246, 0.15); /* Subtle hover */
+  --text-color: #1f2937; /* Darker text for better contrast */
+  --border-color: rgba(255, 255, 255, 0.08); /* Very subtle borders */
+  --accent-color: #3b82f6; /* Modern blue accent */
+  --shadow-color: rgba(0, 0, 0, 0.03); /* Very subtle shadows */
+  --icon-size: 1.3em; /* Slightly smaller icons */
+  --label-size: 0.65em; /* Smaller, cleaner labels */
+  --transition-speed: 0.2s;
+}
+
+/* Modern transparent container - no background */
+.svgContainer {
+  position: relative;
+  background: transparent; /* Completely transparent container */
+  border-radius: 0; /* No border radius */
+  padding: 10px; /* Keep padding to avoid edge clipping */
+  backdrop-filter: none; /* No blur effect */
+  border: none; /* No border */
+  box-shadow: none; /* No shadow */
+  margin-top: 15px; /* Push it down a bit from the trigger point */
+}
+
+.svgContainer:hover {
+  background: transparent; /* Keep transparent on hover */
+}
+
+/* Modern hexagon styling - black background with bright borders */
+.hexagon {
+  fill: rgba(0, 0, 0, 0.9); /* Dark black fill */
+  stroke: rgba(255, 255, 255, 0.3); /* Default subtle white border */
+  stroke-width: 2.5; /* Thick borders for modern look */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(
+    0 4px 8px rgba(0, 0, 0, 0.3)
+  ); /* Strong shadow for depth */
+  will-change: transform, fill, stroke;
+}
+
+/* Center hexagon special styling */
+.centerHexagon {
+  fill: rgba(10, 10, 10, 0.95) !important; /* Pure black center */
+  stroke: rgba(255, 255, 255, 0.8) !important; /* Bright white border */
+  stroke-width: 3; /* Thicker border for center */
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+}
+
+/* Color-specific hexagon styles - bright neon borders */
+.hexagon[data-color="blue"] {
+  stroke: #00d4ff; /* Bright cyan-blue */
+  stroke-width: 3;
+}
+
+.hexagon[data-color="green"] {
+  stroke: #00ff88; /* Bright green */
+  stroke-width: 3;
+}
+
+.hexagon[data-color="red"] {
+  stroke: #ff4757; /* Bright red */
+  stroke-width: 3;
+}
+
+.hexagon[data-color="default"] {
+  stroke: #ffffff; /* Bright white */
+  stroke-width: 3;
+}
+
+/* Add button special styling */
+.hexagon[data-add-button="true"] {
+  fill: rgba(0, 0, 0, 0.85) !important;
+  stroke: #00ff88 !important; /* Bright green for add button */
+  stroke-width: 3 !important;
+  stroke-dasharray: 6, 4; /* Larger dashed pattern */
+}
+
+/* Disabled add button styling */
+.hexagon[data-disabled="true"] {
+  fill: rgba(0, 0, 0, 0.5) !important;
+  stroke: rgba(255, 255, 255, 0.3) !important; /* Dim gray for disabled */
+  stroke-width: 2 !important;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+/* Empty slot special styling - subtle and elegant */
+.hexagon[data-empty="true"] {
+  fill: rgba(0, 0, 0, 0.6) !important; /* Slightly lighter black background */
+  stroke: rgba(255, 255, 255, 0.6) !important; /* Dimmer white border */
+  stroke-width: 2.5 !important; /* Normal border thickness */
+  stroke-dasharray: 8, 4; /* Subtle dashed pattern */
+  animation: pulse-empty 2s infinite; /* Gentle pulse animation */
+}
+
+/* Original pulse animation for empty slots */
+@keyframes pulse-empty {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Clean context menu - no visual clutter */
+.contextMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: transparent;
+}
+
+.contextMenu {
+  background: rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  min-width: 140px;
+}
+
+.contextMenuItem {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contextMenuItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.contextMenuItem:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Connection lines for visual flow (inspired by reference image) */
+.connectionLine {
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1.5;
+  stroke-dasharray: 2, 3;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.svgContainer:hover .connectionLine {
+  opacity: 0.9;
+  stroke: rgba(255, 255, 255, 0.25);
+}
+
+/* Ring-based styling for beehive effect - better visibility */
+.hexagon[data-ring="1"] {
+  stroke-width: 1.6; /* Increased for better visibility */
+}
+
+.hexagon[data-ring="2"] {
+  stroke-width: 1.4; /* Increased for better visibility */
+  opacity: 0.95;
+}
+
+.hexagon[data-ring="3"] {
+  stroke-width: 1.2; /* Increased for better visibility */
+  opacity: 0.9;
+}
+
+/* Interactive hexagon group - optimized animations */
+.hexGroup {
+  cursor: pointer;
+  transition: transform 0.12s ease-out; /* Faster transition */
+  will-change: transform; /* Optimize for transforms */
+}
+
+/* Disabled state for hexagon groups */
+.hexGroup:has(.hexagon[data-disabled="true"]) {
+  cursor: not-allowed;
+}
+
+.hexGroup:has(.hexagon[data-disabled="true"]):hover .hexagon {
+  stroke-width: 2 !important; /* Don't increase on hover when disabled */
+  fill: rgba(0, 0, 0, 0.5) !important; /* Keep disabled fill */
+  filter: none !important; /* Remove hover effects */
+  transform: none !important; /* No lift effect when disabled */
+}
+
+/* Hover effects for modern style */
+.hexGroup:hover .hexagon {
+  stroke-width: 4; /* Even thicker on hover */
+  fill: rgba(5, 5, 5, 0.95); /* Slightly lighter black on hover */
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+  transform: translateY(-4px); /* More pronounced lift effect */
+}
+
+.hexGroup:hover .hexagon[data-color="blue"] {
+  stroke: #33e6ff; /* Even brighter on hover */
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.hexGroup:hover .hexagon[data-color="green"] {
+  stroke: #33ff99;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+
+.hexGroup:hover .hexagon[data-color="red"] {
+  stroke: #ff6b7a;
+  box-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
+}
+
+.hexGroup:hover .hexagon[data-color="default"] {
+  stroke: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Empty slot hover effect - inviting and clear */
+.hexGroup:hover .hexagon[data-empty="true"] {
+  fill: rgba(0, 0, 0, 0.8) !important; /* Darker on hover */
+  stroke: rgba(255, 255, 255, 0.9) !important; /* Brighter border on hover */
+  stroke-width: 3 !important; /* Slightly thicker border */
+  stroke-dasharray: none !important; /* Solid border on hover */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); /* Subtle glow */
+  animation: none; /* Stop pulsing on hover */
+}
+
+.hexGroup:hover .centerHexagon {
+  fill: rgba(15, 15, 15, 0.98) !important;
+  stroke: rgba(255, 255, 255, 1) !important; /* Pure white on hover */
+  transform: translateY(-4px);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+}
+
+/* Active state */
+.hexGroup:active .hexagon {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+/* Modern icon styling */
+.hexIcon {
+  font-size: 24px; /* Larger, more prominent icons */
+  font-weight: 600; /* Bolder icons */
+  fill: #ffffff; /* Pure white icons */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); /* Strong shadow for visibility */
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.hexGroup:hover .hexIcon {
+  font-size: 26px; /* Slightly bigger on hover */
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 255, 255, 0.3); /* Glow effect */
+  transform: translateY(-1px);
+}
+
+/* Modern label styling */
+.hexLabel {
+  font-size: 10px; /* Smaller but readable */
+  font-weight: 500;
+  fill: #ffffff; /* Pure white labels */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); /* Strong shadow for visibility */
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.hexGroup:hover .hexLabel {
+  font-size: 11px; /* Slightly bigger on hover */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(255, 255, 255, 0.2); /* Subtle glow */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .svgContainer {
+    padding: 3px;
+  }
+
+  .hexIcon {
+    font-size: 14px;
+  }
+
+  .hexLabel {
+    font-size: 7px;
+  }
+}
+
+/* Performance optimizations */
+.hexGroup,
+.hexagon,
+.hexIcon,
+.hexLabel {
+  backface-visibility: hidden; /* Prevent flickering */
+  transform-style: preserve-3d; /* Better 3D transforms */
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .hexGroup,
+  .hexagon {
+    transition: none;
+    animation: none;
+  }
+
+  .hexGroup:hover .hexagon {
+    transform: scale(1.02); /* Minimal hover effect */
+  }
+}
+
+/* --- Remove ALL old styles --- */
+/* The following classes are no longer used: */
+/* .container, .centerElement, .centerIcon, .centerLabel, .petalsContainer, */
+/* .petalElement, .petalElement:hover, .petal-N, .petalIcon, .petalLabel */
+
+/* Subtle bee animation - a delightful touch when menu opens */
+.beeContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.bee {
+  position: absolute;
+  font-size: 14px;
+  opacity: 0.7;
+  animation: beeFlightPath1 var(--bee-duration, 3s) ease-in-out forwards;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+  transform-origin: center;
+}
+
+/* Randomize animation with CSS custom properties */
+.bee:nth-child(odd) {
+  animation-name: beeFlightPath2;
+  --bee-duration: 3.5s;
+  font-size: 16px;
+}
+
+.bee:nth-child(3n) {
+  animation-name: beeFlightPath3;
+  --bee-duration: 2.8s;
+  font-size: 12px;
+}
+
+/* Primary bee flight path - gentle arc */
+@keyframes beeFlightPath1 {
+  0% {
+    top: -15px;
+    left: 15%;
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.9);
+  }
+  10% {
+    opacity: 0.7;
+  }
+  25% {
+    top: 25%;
+    left: 35%;
+    transform: rotate(12deg) scale(1.1);
+  }
+  50% {
+    top: 45%;
+    left: 65%;
+    transform: rotate(-8deg) scale(0.95);
+  }
+  75% {
+    top: 65%;
+    left: 25%;
+    transform: rotate(18deg) scale(1.05);
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    top: 105%;
+    left: 85%;
+    opacity: 0;
+    transform: rotate(-3deg) scale(0.8);
+  }
+}
+
+/* Alternative flight path - zigzag pattern */
+@keyframes beeFlightPath2 {
+  0% {
+    top: -20px;
+    left: 80%;
+    opacity: 0;
+    transform: rotate(20deg) scale(0.7);
+  }
+  15% {
+    opacity: 0.6;
+    top: 15%;
+    left: 60%;
+    transform: rotate(-15deg) scale(1);
+  }
+  30% {
+    top: 30%;
+    left: 80%;
+    transform: rotate(25deg) scale(0.9);
+  }
+  45% {
+    top: 45%;
+    left: 40%;
+    transform: rotate(-20deg) scale(1.2);
+  }
+  60% {
+    top: 60%;
+    left: 70%;
+    transform: rotate(10deg) scale(0.85);
+  }
+  80% {
+    top: 80%;
+    left: 30%;
+    transform: rotate(-12deg) scale(1.1);
+    opacity: 0.4;
+  }
+  100% {
+    top: 110%;
+    left: 10%;
+    opacity: 0;
+    transform: rotate(8deg) scale(0.6);
+  }
+}
+
+/* Third flight path - figure-8 style */
+@keyframes beeFlightPath3 {
+  0% {
+    top: 50%;
+    left: -10%;
+    opacity: 0;
+    transform: rotate(0deg) scale(0.8);
+  }
+  12% {
+    opacity: 0.7;
+    left: 20%;
+    transform: rotate(-30deg) scale(1);
+  }
+  25% {
+    top: 30%;
+    left: 40%;
+    transform: rotate(45deg) scale(1.1);
+  }
+  37% {
+    top: 50%;
+    left: 60%;
+    transform: rotate(-45deg) scale(0.9);
+  }
+  50% {
+    top: 70%;
+    left: 40%;
+    transform: rotate(30deg) scale(1.2);
+  }
+  62% {
+    top: 50%;
+    left: 20%;
+    transform: rotate(-60deg) scale(0.85);
+  }
+  75% {
+    top: 30%;
+    left: 60%;
+    transform: rotate(20deg) scale(1.05);
+  }
+  87% {
+    top: 50%;
+    left: 80%;
+    opacity: 0.5;
+    transform: rotate(-10deg) scale(0.9);
+  }
+  100% {
+    left: 110%;
+    opacity: 0;
+    transform: rotate(15deg) scale(0.7);
+  }
+}
+
+/* Add subtle wing flutter effect */
+@keyframes wingFlutter {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(1.1);
+  }
+}
+
+.bee::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  top: 2px;
+  left: 6px;
+  animation: wingFlutter 0.1s infinite;
+}
+
+/* Text styling for hexagon labels - bigger and more readable */
+.hexLabel {
+  font-size: 13px; /* Increased from 11px for better readability */
+  fill: rgba(255, 255, 255, 0.9); /* More visible text */
+  font-weight: 600; /* Bolder text */
+  pointer-events: none;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow for contrast */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  transition: fill 0.15s ease-out;
+}

@@ -1,0 +1,303 @@
+.sidebar {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 180px;
+  pointer-events: none;
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progressItem {
+  background: rgba(10, 10, 15, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 10px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.progressItem:hover {
+  background: rgba(15, 15, 20, 0.9);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.progressItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: itemShimmer 3s infinite;
+  animation-delay: var(--shimmer-delay, 0s);
+}
+
+.progressItem:nth-child(1)::before {
+  --shimmer-delay: 0s;
+}
+.progressItem:nth-child(2)::before {
+  --shimmer-delay: 0.5s;
+}
+.progressItem:nth-child(3)::before {
+  --shimmer-delay: 1s;
+}
+.progressItem:nth-child(4)::before {
+  --shimmer-delay: 1.5s;
+}
+
+.progressContent {
+  position: relative;
+  z-index: 1;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.progressLabel {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.progressPercent {
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressBarContainer {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  height: 4px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 4px;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: 0 0 6px rgba(0, 168, 204, 0.3);
+}
+
+.progressBar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: progressShimmer 2s infinite;
+  border-radius: 4px;
+}
+
+.progressDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 8px;
+}
+
+.progressTotal {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-variant-numeric: tabular-nums;
+}
+
+.progressRemaining {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes itemShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 160px;
+    top: 12px;
+    right: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 140px;
+    top: 10px;
+    right: 10px;
+    gap: 3px;
+  }
+
+  .progressItem {
+    padding: 5px 8px;
+  }
+
+  .progressLabel {
+    font-size: 8px;
+  }
+
+  .progressPercent {
+    font-size: 9px;
+  }
+
+  .progressDetails {
+    font-size: 7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 120px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .progressItem {
+    padding: 4px 6px;
+  }
+
+  .progressLabel {
+    font-size: 7px;
+  }
+
+  .progressPercent {
+    font-size: 8px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sidebar {
+    border: 2px solid #ffffff;
+  }
+
+  .progressItem {
+    border: 1px solid #ffffff;
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .progressBar {
+    box-shadow: none;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .progressItem {
+    transition: none;
+  }
+
+  .progressBar {
+    transition: none;
+  }
+
+  .progressBar::after,
+  .progressItem::before {
+    animation: none;
+  }
+
+  .progressItem:hover {
+    transform: none;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: light) {
+  .sidebar {
+    color: #333;
+  }
+
+  .progressItem {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .progressPercent {
+    color: #333;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  .progressLabel {
+    color: rgba(0, 0, 0, 0.7);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  .progressTotal {
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+
+  .progressRemaining {
+    color: rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Focus states for accessibility */
+.progressItem:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}

@@ -1,5 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+} from "react";
 import { createRoot } from "react-dom/client";
+// Attempt to force TypeScript to recognize global types
+import type {} from "./preload.d";
 
 // Placeholder UI component for the capture window
 const CaptureUI: React.FC = () => {
@@ -53,7 +61,13 @@ const CaptureUI: React.FC = () => {
     if (!isSelecting) return;
     setIsSelecting(false);
     const bounds = getSelectionBounds();
-    if (bounds && bounds.width > 0 && bounds.height > 0) {
+    // Define a minimum size for the selection
+    const MIN_SELECTION_SIZE = 10; // e.g., 10 pixels
+    if (
+      bounds &&
+      bounds.width >= MIN_SELECTION_SIZE &&
+      bounds.height >= MIN_SELECTION_SIZE
+    ) {
       // Adjust for device scale factor if needed (more complex, skip for now)
       sendResult(false, bounds);
     } else {
@@ -122,8 +136,8 @@ const CaptureUI: React.FC = () => {
         ref={selectionDivRef}
         style={{
           position: "absolute",
-          border: "2px dashed white",
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          border: "3px solid #00FF00", // Aggressive green, solid, thicker
+          backgroundColor: "transparent", // Transparent background
           display: "none",
           pointerEvents: "none",
         }}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Trigger</title>
+    <style>
+      /* Basic reset and ensure transparency */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: transparent;
+        cursor: default; /* Change cursor only on the line */
+        display: flex; /* Use flex to center the line */
+        justify-content: center;
+        align-items: flex-start; /* Position at very top */
+        padding-top: 0; /* Ensure no top padding */
+      }
+      #trigger-line {
+        position: relative; /* Needed for absolute positioning of pseudo-element */
+        overflow: hidden; /* Hide the light when it goes outside */
+        width: 100%; /* Line takes full width of the container */
+        height: 1px; /* Made thinner as requested */
+        /* --- Much more visible for better discoverability --- */
+        background-color: rgba(120, 120, 120, 0.4); /* Much more visible */
+        box-shadow: 0 0 5px rgba(120, 120, 120, 0.3); /* Stronger shadow */
+        border-radius: 2px; /* Rounded edges for modern look */
+        /* --- End Update --- */
+        transition: all 0.2s ease; /* Smooth transition for all properties */
+        cursor: pointer; /* Pointer cursor only on the line */
+      }
+      /* Super responsive hover effect */
+      #trigger-line:hover {
+        /* --- Instant visibility and pop effect --- */
+        background-color: #00aaff; /* Bright blue when hovered */
+        box-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff,
+          0 0 30px rgba(0, 170, 255, 0.4); /* Strong glow effect */
+        transform: scaleY(8) scaleX(1.5); /* More dramatic pop effect */
+        border-radius: 3px; /* More rounded for the pop effect */
+        opacity: 1; /* Full visibility on hover */
+        /* --- End Update --- */
+      }
+
+      /* Add a subtle tooltip-like pop effect */
+      #trigger-line:hover::before {
+        content: "📸";
+        position: absolute;
+        top: 4px; /* Position very close to the line */
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 170, 255, 0.95);
+        color: white;
+        padding: 1px 4px;
+        border-radius: 2px;
+        font-size: 9px;
+        font-family: system-ui, -apple-system, sans-serif;
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 10000;
+        animation: popIn 0.1s ease-out;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes popIn {
+        0% {
+          opacity: 0;
+          transform: translateX(-50%) translateY(-5px) scale(0.8);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+      }
+
+      /* --- Practically invisible moving light animation --- */
+      #trigger-line::after {
+        content: "";
+        position: absolute;
+        top: -1px; /* Position slightly above/on the line */
+        left: 0;
+        width: 20px; /* Smaller light */
+        height: 3px; /* Adjusted light to match thinner line */
+        /* --- More visible subtle gradient --- */
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 170, 255, 0.2),
+          rgba(255, 255, 255, 0.15),
+          rgba(0, 170, 255, 0.2),
+          transparent
+        ); /* More visible subtle gradient */
+        border-radius: 3px; /* Rounded light */
+        /* --- End Update --- */
+        animation: moveLight 4s linear infinite;
+        opacity: 0.8; /* Much more visible by default */
+      }
+
+      /* Make the light more visible on hover */
+      #trigger-line:hover::after {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 170, 255, 1),
+          rgba(255, 255, 255, 0.9),
+          rgba(0, 170, 255, 1),
+          transparent
+        ); /* Bright gradient on hover */
+        opacity: 1;
+      }
+
+      @keyframes moveLight {
+        0% {
+          left: -20px; /* Start off-screen left */
+        }
+        100% {
+          left: 100%; /* Move fully across to the right */
+        }
+      }
+      /* --- End Animation --- */
+    </style>
+  </head>
+  <body>
+    <div id="trigger-line"></div>
+  </body>
+</html>

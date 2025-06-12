@@ -45,11 +45,28 @@ const config: ForgeConfig = {
               js: "./src/capturePreload.ts",
             },
           },
+          {
+            html: "./src/hub/menu.html",
+            js: "./src/hub/renderer.tsx",
+            name: "hub_menu_window",
+            preload: {
+              js: "./src/hub/menuPreload.ts",
+            },
+          },
+          {
+            name: "hub_trigger_preload_only",
+            preload: {
+              js: "./src/hub/preload.ts",
+            },
+          },
         ],
       },
+      devServer: {
+        liveReload: false,
+        hot: false,
+        host: "localhost",
+      },
     }),
-    // Fuses are used to enable/disable various Electron functionality
-    // at package time, before code signing the application
     new FusesPlugin({
       version: FuseVersion.V1,
       [FuseV1Options.RunAsNode]: false,

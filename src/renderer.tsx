@@ -29,6 +29,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client"; // Import createRoot for React 18
 import App from "./App"; // Import the main App component (will be created next)
+import ErrorBoundary from "./components/ErrorBoundary"; // <-- ADD IMPORT
 import "./index.css";
 
 // Find the root element in index.html
@@ -42,7 +43,28 @@ if (rootElement) {
   // Render the App component within React StrictMode
   root.render(
     <React.StrictMode>
-      <App />
+      <ErrorBoundary
+        fallback={
+          <div
+            style={{
+              color: "orange",
+              padding: "20px",
+              textAlign: "center",
+              border: "2px dashed orange",
+              margin: "20px",
+              backgroundColor: "#333",
+            }}
+          >
+            <h2>Oops! The Application Encountered a Critical Error.</h2>
+            <p>
+              Something went wrong while loading the main application. Please
+              try restarting.
+            </p>
+          </div>
+        }
+      >
+        <App />
+      </ErrorBoundary>
     </React.StrictMode>
   );
 } else {
