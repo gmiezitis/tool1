@@ -72,6 +72,7 @@ export class ApplicationService {
         { name: "Snipping Tool", path: "SnippingTool.exe", icon: "✂️" },
         { name: "Command Prompt", path: "cmd.exe", icon: "⌨️" },
         { name: "PowerShell", path: "powershell.exe", icon: "🔷" },
+        { name: "File Explorer", path: "explorer.exe", icon: "📁" },
 
         // Common installation paths
         {

@@ -296,10 +296,11 @@ const RadialMenu: React.FC<RadialMenuProps> = (props) => {
 
   // Updated action for the center button
   const handleCenterClick = useCallback(() => {
-    console.log("Snipping Tool (Center) Clicked - Triggering Action via IPC");
-    (
-      window.electronAPI as unknown as IHubMenuElectronAPI
-    )?.triggerMainAppSnip();
+    console.log("LLM Chat (Center) Clicked - Opening Chat Interface");
+    // TODO: Implement LLM chat interface
+    // For now, we'll just log and hide the menu
+    // Later this will open a chat window or interface
+    console.log("🤖 Opening local offline LLM chat...");
     requestHideMenu(); // Hide the menu after triggering action
   }, [requestHideMenu]);
 
@@ -540,9 +541,32 @@ const RadialMenu: React.FC<RadialMenuProps> = (props) => {
         return;
       }
 
-      // TODO: Implement actions for other segments
-      console.log("🔍 Other segment clicked, hiding menu");
-      requestHideMenu();
+      // Handle default system applications
+      try {
+        console.log(`🚀 Launching system application: ${toolName} (${toolId})`);
+        
+        // Map tool IDs to system application IDs that ApplicationService can handle
+        const systemAppMap: { [key: string]: string } = {
+          "calculator": "system-calculator",
+          "notepad": "system-notepad", 
+          "browser": "detected-google-chrome", // Try Chrome first, fallback handled in service
+          "files": "system-file-explorer",
+          "snipping-tool": "system-snipping-tool"
+        };
+
+        const systemAppId = systemAppMap[toolId];
+        if (systemAppId) {
+          // Use the existing application service to launch system apps
+          (window.electronAPI as unknown as IHubMenuElectronAPI)?.launchApplication(systemAppId);
+          requestHideMenu(); // Hide menu after launching
+        } else {
+          console.log(`⚠️ No system app mapping found for ${toolId}, hiding menu`);
+          requestHideMenu();
+        }
+      } catch (error) {
+        console.error(`❌ Error launching ${toolName}:`, error);
+        requestHideMenu(); // Still hide menu even if launch fails
+      }
     },
     [
       requestHideMenu,
@@ -620,11 +644,11 @@ const RadialMenu: React.FC<RadialMenuProps> = (props) => {
           action: () => handleSegmentClick("Browser", "browser"),
         },
         {
-          id: "clock",
-          name: "Clock",
-          icon: "🕒",
+          id: "snipping-tool",
+          name: "Snipping Tool",
+          icon: "✂️",
           color: "red",
-          action: () => handleSegmentClick("Clock", "clock"),
+          action: () => handleSegmentClick("Snipping Tool", "snipping-tool"),
         },
         {
           id: "files",
@@ -660,8 +684,8 @@ const RadialMenu: React.FC<RadialMenuProps> = (props) => {
   // Define the center tool
   const centerTool = {
     id: "center",
-    name: "Snipping Tool",
-    icon: "✂️",
+    name: "LLM Chat",
+    icon: "🤖",
     action: handleCenterClick,
   };
 
